@@ -5,12 +5,8 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<script>
-	
-</script>
 </head>
 <body>
-	에러 터졌어요!!
-	
+	<h1>testJoin Page</h1>
 </body>
 </html>

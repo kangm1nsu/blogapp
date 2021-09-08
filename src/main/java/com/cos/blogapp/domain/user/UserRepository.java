@@ -14,6 +14,7 @@ public interface UserRepository extends JpaRepository<User, Integer>{
 	@Query(value = "insert into user ( username, password,  email) values (:username, :password, :email)", nativeQuery = true)
 	void join(String username, String password, String email);
 	
+	
 	@Query(value = "select * from user where username = :username and password = :password", nativeQuery = true)
 	User mLogin(String username, String password);//자동완성시 m이라고 쓰면 내가직접작성한걸다 볼수있음, 오브젝트를넣을수없음
 }

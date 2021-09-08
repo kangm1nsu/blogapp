@@ -9,7 +9,7 @@
 
 	<form action="/login" method="POST">
 		<div class="form-group">
-			<input type="text" name="username" class="form-control" placeholder="Enter username" required="required">
+			<input type="text" name="username" class="form-control" placeholder="Enter username" required="required" maxlength="20">
 		</div>
 		<div class="form-group">
 			<input type="password" name="password" class="form-control"
