@@ -16,6 +16,12 @@
 	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	
+
+<!-- include summernote css/js -->
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+
 <style>
 .container {
 	margin: 0 auto;
@@ -34,12 +40,31 @@
 		</button>
 		<div class="collapse navbar-collapse" id="collapsibleNavbar">
 			<ul class="navbar-nav">
-				<li class="nav-item"><a class="nav-link" href="/loginForm">로그인</a>
-				</li>
-				<li class="nav-item"><a class="nav-link" href="/joinForm">회원가입</a>
-				</li>
+			
+				<c:choose>
+					<c:when test="${empty sessionScope.principal}">
+						<li class="nav-item"><a class="nav-link" href="/loginForm">로그인</a>
+						</li>
+
+						<li class="nav-item"><a class="nav-link" href="/joinForm">회원가입</a>
+						</li>
+					</c:when>
+					<c:otherwise>
+						<li class="nav-item"><a class="nav-link" href="/board/saveForm">글쓰기</a>
+						</li>
+
+						<li class="nav-item"><a class="nav-link" href="/user/${sessionScope.principal.id}">회원정보</a>
+						</li>
+
+						<li class="nav-item"><a class="nav-link" href="/logout">로그아웃</a>
+						</li>
+					</c:otherwise>
+				</c:choose>
+				
 			</ul>
 		</div>
 	</nav>
 	<br>
 	<!-- 네브바 끝 -->
+
+	${sessionScope.principal.username}
