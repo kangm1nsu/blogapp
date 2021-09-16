@@ -48,7 +48,7 @@ public class BoardController {
 		
 		//2.orElse Throw
 		Board boardEntity = boardRepository.findById(id)
-				.orElseThrow(()-> 
+				.orElseThrow(()->
 					 new MyNotFoundException(id + " 못찾았어요"));
 		
 		model.addAttribute("boardEntity", boardEntity);
