@@ -2,7 +2,6 @@ package com.cos.blogapp.web;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Supplier;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -14,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,9 +22,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.cos.blogapp.domain.board.Board;
 import com.cos.blogapp.domain.board.BoardRepository;
 import com.cos.blogapp.domain.user.User;
+import com.cos.blogapp.handler.ex.MyAsyncNotFoundException;
 import com.cos.blogapp.handler.ex.MyNotFoundException;
 import com.cos.blogapp.util.Script;
 import com.cos.blogapp.web.dto.BoardSaveReqDto;
+import com.cos.blogapp.web.dto.CMRespDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -34,6 +36,34 @@ public class BoardController {
 
 	private final BoardRepository boardRepository;
 	private final HttpSession session;
+	
+	@DeleteMapping("/board/{id}")
+	public @ResponseBody CMRespDto<String> deleteById(@PathVariable int id) {
+		
+		//인증이 된 사람만 함수 접근 가능 !!(로그인 된 사람)
+		User principal = (User) session.getAttribute("principal");
+		if(principal == null) {
+			throw new MyAsyncNotFoundException("로그인후 이용해주세요");
+		}
+		
+		//권한이 있는 사람만 함수 접근 가능 (principal.id=={id})
+		
+		Board boardEntity = boardRepository.findById(id)
+				.orElseThrow(()-> new MyAsyncNotFoundException("해당글을 찾을수 없습니다"));
+			if(principal.getId() != boardEntity.getUser().getId()) {
+				throw new MyAsyncNotFoundException("해당글을 삭제할 권한이 없습니다");
+			}
+		
+		
+		
+		try {
+		boardRepository.deleteById(id);
+		} catch (Exception e) {
+			throw new MyAsyncNotFoundException(id + "를 찾을 수없어서 삭제할수없어요");
+		}
+		return new CMRespDto<String>(1,"성공", null);
+		
+	}
 	
 	//쿼리스트링, pathvar >>디비 where에 걸리는 친구들
 	//1.컨트롤러 선정, 2.Http Method 선정, 3. 받을데이터가 있는지!!(body,쿼리스트링,pathVar)
