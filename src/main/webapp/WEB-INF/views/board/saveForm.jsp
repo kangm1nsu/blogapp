@@ -6,7 +6,7 @@
 <div class="container">
    <form action="/board"  method="post">
      <div class="form-group">
-       <input type="text"  name="title" class="form-control" placeholder="Enter title"  >
+       <input type="text"  name="title" class="form-control" placeholder="Enter title"  required="required" >
      </div>
      <div class="form-group">
         <textarea class="form-control" id = "summernote" rows="5"  name="content"></textarea>

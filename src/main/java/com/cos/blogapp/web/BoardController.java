@@ -63,7 +63,8 @@ public class BoardController {
 			for (FieldError error : bindingResult.getFieldErrors()) {
 				errorMap.put(error.getField(), error.getDefaultMessage());
 			}
-			return new CMRespDto<>(-1,"유효성 검사 fial",null);
+			//return new CMRespDto<>(-1,"유효성 검사 실패",null);
+			throw new MyAsyncNotFoundException(errorMap.toString());
 		}
 
 		Board board = dto.toEntity(principal);
