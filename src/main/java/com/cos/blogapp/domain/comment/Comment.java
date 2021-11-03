@@ -10,6 +10,8 @@ import javax.persistence.ManyToOne;
 
 import com.cos.blogapp.domain.board.Board;
 import com.cos.blogapp.domain.user.User;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -33,6 +35,9 @@ public class Comment {
 	
 	@JoinColumn(name = "boardId")
 	@ManyToOne
+	@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class)
 	private Board board;
+
+	
 	
 }

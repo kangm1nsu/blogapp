@@ -1,5 +1,4 @@
 
-
 package com.cos.blogapp.service;
 
 import org.springframework.data.domain.Page;
@@ -26,21 +25,6 @@ public class BoardService {
 
 	// 생성자 주입 (DI)
 	private final BoardRepository boardRepository;
-	private final CommentRepository commentRepository;
-
-	@Transactional(rollbackFor = MyNotFoundException.class)
-	public void 댓글등록(int boardId, CommentSaveReqDto dto, User principal) {
-
-		Board boardEntity = boardRepository.findById(boardId)
-				.orElseThrow(() -> new MyNotFoundException("해당 게시글을 찾을 수 없습니다."));
-
-		Comment comment = new Comment();
-		comment.setContent(dto.getContent());
-		comment.setUser(principal);
-		comment.setBoard(boardEntity);
-
-		commentRepository.save(comment);
-	} // 트랜잭션 종료
 
 	@Transactional(rollbackFor = MyAsyncNotFoundException.class)
 	public void 게시글수정(int id, User principal, BoardSaveReqDto dto) {
@@ -51,14 +35,12 @@ public class BoardService {
 			throw new MyAsyncNotFoundException("해당 게시글의 주인이 아닙니다.");
 		}
 
-		Board board = dto.toEntity(principal);
-		//영속화된 데이터를 변경하면
-				boardEntity.setTitle(dto.getTitle());
-				boardEntity.setContent(dto.getContent());
-				// 트랜잭션 종료 (더티체킹)
+		// 영속화된 데이터를 변경하면
+		boardEntity.setTitle(dto.getTitle());
+		boardEntity.setContent(dto.getContent());
+		// 트랜잭션 종료 (더티체킹)
 	} // 트랜잭션 종료
 
-	
 	public Board 게시글수정페이지이동(int id) {
 		// 게시글 정보를 가지고 가야함.
 		Board boardEntity = boardRepository.findById(id)

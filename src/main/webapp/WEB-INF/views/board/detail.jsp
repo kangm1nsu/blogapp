@@ -14,7 +14,7 @@
 	<script>
 		function deleteById(id){
 			//비동기 함수 호출 -> 비동기를 잘 처리하는방법????
-			let response = await fetch("http://l ocalhost:8080/board/"+id, {
+			let response = await fetch("http://localhost:8080/api/board/"+id, {
 				method: "delete"
 			});
 			
@@ -48,34 +48,67 @@
 	</div>
 	<hr />
 
+	<!-- 댓글 쓰기 시작 -->
+	<div class="card">
+		<form action="/api/board/${boardEntity.id}/comment" method="post" >
+			<div class="card-body">
+				<textarea name="content"  class="form-control"
+					rows="1" id="ta-content"></textarea>
+			</div>
+			<div class="card-footer">
+				<button type="submit" id="btn-reply-save" class="btn btn-primary">등록</button>
+			</div>
+		</form>
+	</div>
+	<br />
 
-  <div class="card">
-      <form action="/board/${boardEntity.id}/comment" method="post">
-         <div class="card-body" >
-            <textarea name="content" id="reply-content" class="form-control" rows="1"></textarea>
-         </div>
-         <div class="card-footer">
-            <button type="submit" id="btn-reply-save" class="btn btn-primary">등록</button>
-         </div>
-      </form>
-   </div>
-   <br />
-   
-   <div class="card">
-      <div class="card-header"><b>댓글 리스트</b></div>
-      <ul id="reply-box" class="list-group">
-         <li id="reply-1" class="list-group-item d-flex justify-content-between">
-         <c:forEach>
-            <div>댓글입니다</div>
-            <div class="d-flex">
-               <div class="font-italic">작성자 : 홍길동 &nbsp;</div>
-               <button class="badge">삭제</button>
-            </div>
-         
-         </c:forEach>
-         </li>
-      </ul>
-   </div>
-   <br/>
+	<div class="card">
+		<!-- 댓글 쓰기 끝 -->
+		<script>
+		$("#ta-content").click(()=>{
+			if(globalUserId == ""){
+				alert("로그인이 필요한 서비스 입니다");
+				location.href = "/loginForm";
+			}
+		});
+      
+      </script>
+
+		<ul id="reply-box" class="list-group">
+
+			<c:forEach var="comment" items="${boardEntity.comments}">
+				<li id="reply-${comment.id}"
+					class="list-group-item d-flex justify-content-between">
+					<div>${comment.content}</div>
+					<div class="d-flex">
+						<div class="font-italic">작성자 : ${comment.user.username} &nbsp;</div>
+						<button class="badge" id="reply-${comment.id}" onclick="deleteById(${comment.id})">삭제</button>
+					</div>
+				</li>
+			</c:forEach>
+
+
+		</ul>
+
+		<script>
+			async function deleteById(commentId){
+				let response = await fetch("http://localhost:8080/comment/" + commentId,{
+					method:"delete"
+				});
+				
+				let parseResponse = await response.json();
+				
+				if(parseResponse.code == 1){
+					alert("댓글 삭제 성공");
+					$("#reply-" + commentId).remove();
+				} else {
+					alert("댓글 삭제에 실패하였습니다." + parseResponse.msg);
+				}
+			}
+		</script>
+
+
+	</div>
+	<br />
 </div>
 <%@ include file="../layout/footer.jsp"%>
